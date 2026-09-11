@@ -18,6 +18,7 @@ from . import (
     kb_workspace,
     paper2drawio,
     paper2ppt,
+    research,
 )
 
 __all__ = [
@@ -34,4 +35,5 @@ __all__ = [
     "files",
     "paper2drawio",
     "paper2ppt",
+    "research",
 ]

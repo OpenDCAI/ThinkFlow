@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review Paper"
+  short_description: "Evidence-grounded academic critique and peer review"
+  default_prompt: "Use $review-paper to critique the attached paper and propose actionable revisions."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Read Paper"
+  short_description: "Structured paper reading at three analysis depths"
+  default_prompt: "Use $read-paper to explain the attached paper at standard depth."
+policy:
+  allow_implicit_invocation: true

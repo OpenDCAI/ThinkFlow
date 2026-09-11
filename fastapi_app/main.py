@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import sqlite3  # Load Conda's SQLite/ICU stack before multimedia libraries load libstdc++.
 from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import unquote
@@ -30,13 +31,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-from fastapi_app.routers import auth, data_extract, files, kb, kb_conversation_workspace, kb_documents, kb_embedding, kb_notebooks, kb_outputs_v2, kb_sources, kb_workspace, paper2drawio, paper2ppt, tts, search
+from fastapi_app.routers import auth, data_extract, files, kb, kb_conversation_workspace, kb_documents, kb_embedding, kb_notebooks, kb_outputs_v2, kb_sources, kb_workspace, paper2drawio, paper2ppt, research, tts, search
 from fastapi_app.middleware.api_key import APIKeyMiddleware
 from fastapi_app.middleware.logging import LoggingMiddleware
 from workflow_engine.utils import get_project_root
 
 # Import services (Provider-based)
 from fastapi_app.services.embedding_service import EmbeddingService
+from fastapi_app.services.research_codex_service import codex_service
 from fastapi_app.services.tts_service import TTSService
 
 
@@ -50,9 +52,11 @@ async def _lifespan(app: FastAPI):
     tts_service = TTSService()
 
 
-    yield
-
-    log.info("Application shutdown")
+    try:
+        yield
+    finally:
+        await codex_service.close()
+        log.info("Application shutdown")
 
 
 def create_app() -> FastAPI:
@@ -90,6 +94,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
     app.include_router(tts.router, prefix="/api/v1", tags=["TTS"])
     app.include_router(search.router, prefix="/api/v1", tags=["Search"])
+    app.include_router(research.router, prefix="/api/v1", tags=["Research Workspace"])
 
     # Static files: /outputs
     project_root = get_project_root()

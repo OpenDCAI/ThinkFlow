@@ -16,6 +16,7 @@ supabase>=2.0.0
 
 # ------ LLM / LangChain / LangGraph ------
 openai>=1.50.0
+openai-codex==0.144.4
 langchain==0.3.27
 langchain-openai>=0.3.35,<0.4.0
 langchain-chroma>=0.2.6,<0.3.0
